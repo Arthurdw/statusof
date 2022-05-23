@@ -23,7 +23,11 @@ Parameters:
     -u, --url: url to check
     -f, --file: file containing urls to check
     -t, --timeout: timeout in seconds
-    -s, --secure: Try to use HTTPS instead of HTTP
+    -p, --precision: precision of the time
+
+Flags:
+    -s, --secure: try to use HTTPS instead of HTTP
+    -c, --colors: disable color output
     -h, --help: show this help message
 
 Usage:
@@ -38,6 +42,7 @@ Usage:
 Written with love by @Arthurdw (github.com/arthurdw)"""
 from __future__ import annotations
 
+import time
 import asyncio
 import re
 import sys
@@ -73,6 +78,7 @@ summary = {
 
 timeout = 10
 secure = False
+precision = 3
 
 
 class Styles:
@@ -137,7 +143,9 @@ async def display_status(url: str):
     summary["total_urls"] += 1
 
     try:
+        start = time.perf_counter()
         status = await get_status(url)
+        end = time.perf_counter()
 
         if status < 300 and status >= 200:
             status = Styles.URL_SUCCESS + str(status) + Style.RESET_ALL
@@ -149,7 +157,7 @@ async def display_status(url: str):
             status = Styles.URL_SERVER_FAILURE + str(status) + Style.RESET_ALL
             summary["server_failure"] += 1
 
-        print(f"{status}: {formatted_url}")
+        print(f"{status} ({round(end-start, precision)}s): {formatted_url}")
     except ClientConnectionError as e:
         print(f"{e}: {formatted_url}")
         summary["failure"] += 1
@@ -203,8 +211,16 @@ def main():
         if len(args) < 1:
             raise RuntimeError("Invalid arguments")
 
-        full_commands = ["help=" "secure=", "url=", "file=", "timeout="]
-        opts, _ = getopt.getopt(args, "shu:f:t:", full_commands)
+        full_commands = [
+            "help",
+            "colors",
+            "secure",
+            "url=",
+            "file=",
+            "timeout=",
+            "precision=",
+        ]
+        opts, _ = getopt.getopt(args, "shcu:f:t:p:", full_commands)
     except (getopt.GetoptError, RuntimeError):
         print("Invalid arguments, use --help for help")
         sys.exit(2)
@@ -223,6 +239,20 @@ def main():
         elif opt in ("-s", "--secure"):
             global secure
             secure = True
+        elif opt in ("-c", "--colors"):
+            for style in Styles.__dict__:
+                if style.startswith("_"):
+                    continue
+
+                setattr(Styles, style, "")
+        elif opt in ("-p", "--precision"):
+            global precision
+
+            try:
+                precision = int(arg)
+            except ValueError:
+                print("Invalid precision value")
+                sys.exit(2)
         elif opt in ("-t", "--timeout"):
             global timeout
 
