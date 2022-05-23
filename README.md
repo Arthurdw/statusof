@@ -7,7 +7,12 @@ Small python script to check the status of a list of urls.
 - `-u`, `--url`: **url to check**
 - `-f`, `--file`: **file containing urls to check**
 - `-t`, `--timeout`: **timeout in seconds**
+- `-p`, `--precision`: **precision of the time**
+
+# Flags
+
 - `-s`, `--secure`: **Try to use HTTPS instead of HTTP**
+- -`c`, `--colors`: **disable color output**
 - `-h`, `--help`: **show this help message**
 
 # Usage:
@@ -29,3 +34,7 @@ Statusof can be installed with pip:
 ```
 pip install -U statusof
 ```
+
+# Example preview
+
+![image](https://user-images.githubusercontent.com/38541241/169846012-83a10495-78e9-4c42-82b0-49e8cb7d80e4.png)
