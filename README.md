@@ -29,10 +29,18 @@ Small python script to check the status of a list of urls.
 
 ## Installation
 
-Statusof can be installed with pip:
+### Pip
 
 ```
 pip install -U statusof
+```
+
+### AUR
+
+_(uses pip under the hood)_
+
+```
+paru -S python-statusof
 ```
 
 ## Example preview
