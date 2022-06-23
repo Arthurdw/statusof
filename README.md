@@ -37,8 +37,6 @@ pip install -U statusof
 
 ### AUR
 
-_(uses pip under the hood)_
-
 ```
 paru -S python-statusof
 ```
